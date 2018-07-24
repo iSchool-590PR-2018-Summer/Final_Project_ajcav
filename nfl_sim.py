@@ -1,4 +1,5 @@
 import nflgame
+import numpy as np
 
 
 def get_team():
@@ -53,7 +54,35 @@ def validate_player(player):
     selection = int(raw_input('Enter your selection: '))
     return matches[selection-1]
 
-def simulate(team, N=1000):
+
+def score_to_fantasy_points(game_stats):
+    point_conversion = {'passing_twoptm': lambda x: x*2.0,
+                        'passing_yds': lambda x: x/5.0*0.2,
+                        'passing_tds': lambda x: x*4.0,
+                        'passing_ints': lambda x: x*(-2.0)}
+
+    points = 0.0
+    for stat in game_stats._stats:
+        if stat in point_conversion.keys():
+            points += point_conversion[stat](getattr(game_stats,stat))
+    return points
+
+
+def get_player_score(player):
+    year = np.random.choice([2014, 2015, 2016], p=[.15, .25, .6])
+    week = np.random.randint(1, 18)
+    games = nflgame.games(year, week=week)
+    games = nflgame.combine_game_stats(games)
+
+    for game in games:
+        if game.player is None:
+            continue
+        if player == game.player:
+            return score_to_fantasy_points(game)
+    return get_player_score(player)
+
+
+def simulate(team, N=100):
     """
     This function runs a Monte Carlo simulation by selecting a random year (weighted heuristically since more recent
     years are a better reflection of player ability) and random week to sample a players fantasy score. The average
@@ -64,9 +93,17 @@ def simulate(team, N=1000):
     :return: total points for team
     """
 
-    return 1
+    total_score = 0.0
+    for player in team:
+        simulation_score = []
+        for i in range(N):
+            simulation_score.append(get_player_score(player))
+        total_score += np.mean(simulation_score)
+
+    return total_score
 
 
 if __name__ == "__main__":
     players = get_team()
-    points = simulate(players)
+    points = simulate(players,20)
+    print(points)
