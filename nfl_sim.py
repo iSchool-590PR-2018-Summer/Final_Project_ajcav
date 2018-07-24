@@ -71,7 +71,7 @@ def score_to_fantasy_points(game_stats):
 def get_player_score(player):
     year = np.random.choice([2014, 2015, 2016], p=[.15, .25, .6])
     week = np.random.randint(1, 18)
-    games = nflgame.games(year, week=week)
+    games = nflgame.games(2017, week=week)
     games = nflgame.combine_game_stats(games)
 
     for game in games:
