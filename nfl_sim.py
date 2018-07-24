@@ -53,7 +53,20 @@ def validate_player(player):
     selection = int(raw_input('Enter your selection: '))
     return matches[selection-1]
 
+def simulate(team, N=1000):
+    """
+    This function runs a Monte Carlo simulation by selecting a random year (weighted heuristically since more recent
+    years are a better reflection of player ability) and random week to sample a players fantasy score. The average
+    score for a player is averaged over N simulations, then added to the team score. The total team score is returned.
+
+    :param team: list of Player objects
+    :param N: number of simulations to run
+    :return: total points for team
+    """
+
+    return 1
 
 
 if __name__ == "__main__":
-    get_team()
+    players = get_team()
+    points = simulate(players)
