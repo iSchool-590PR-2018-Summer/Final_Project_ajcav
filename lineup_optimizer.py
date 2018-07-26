@@ -252,7 +252,7 @@ def can_add_player(roster, new_position):
 
     :param roster: pandas DataFrame containing the current team
     :param new_position: string, position of player to be added to team
-    :return: boolean, indicated whether or not this player can be legally added to the roster
+    :return: boolean, indicating whether or not this player can be legally added to the roster
     """
 
     # If the position is blank, or not in the list of fantasy positions, we cannot add the player to the roster
