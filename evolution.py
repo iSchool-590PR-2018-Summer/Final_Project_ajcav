@@ -4,6 +4,25 @@ import pandas as pd
 from tabulate import tabulate
 
 
+def get_desired_players(all_available_players):
+    players = []
+    print('Are there any players you know you want on your team? (blank if none)')
+    new_player = raw_input('Enter player name: ')
+    while new_player:
+        new_player = validate_player(new_player)
+        if new_player:
+            if validate_team(players, new_player):
+                players.append(new_player)
+                all_available_players.remove(new_player)
+        else:
+            print('Could not find player. Please try again.')
+        new_player = raw_input('Enter player name: ')
+    print('Your team so far is: ')
+    for player in players:
+        print(player.full_name+', '+player.team)
+    return players, all_available_players
+
+
 def validate_team(players, addition):
     team_restrictions = {'QB': 4,
                          'RB': 8,
@@ -27,7 +46,6 @@ def validate_team(players, addition):
 
 
 def validate_player(player):
-
     matches = nflgame.find(player)
     if len(matches) == 1:
         return matches[0]
@@ -85,7 +103,7 @@ def score_to_fantasy_points(player):
 
 def get_player_score(player):
     i = 0
-    while i < 50:
+    while i < 20:
         i += 1
         year = np.random.choice([2014, 2015, 2016, 2017], p=[0.1, .15, .25, .5])
         week = np.random.randint(1, 18)
@@ -188,49 +206,14 @@ def build_optimal_team(current_roster, available_players):
     return current_roster
 
 
-def remove_undesired_players(players):
-    print('Are there any players you absolutely do not want on your team? ')
-    player_to_remove = raw_input('Enter player name: ')
-    while player_to_remove:
-        player_to_remove = validate_player(player_to_remove)
-        if player_to_remove:
-            players.remove(player_to_remove)
-        else:
-            print('Could not find player.')
-        player_to_remove = raw_input('Enter player name: ')
-    return players
-
-def get_desired_players(all_available_players):
-    players = []
-    print('Are there any players you know you want on your team? (blank if none)')
-    new_player = raw_input('Enter player name: ')
-    while new_player:
-        new_player = validate_player(new_player)
-        if new_player:
-            if validate_team(players, new_player):
-                players.append(new_player)
-                all_available_players.remove(new_player)
-        else:
-            print('Could not find player. Please try again.')
-        new_player = raw_input('Enter player name: ')
-    print('Your team so far is: ')
-    for player in players:
-        print(player.full_name + ', ' + player.team)
-    return players, all_available_players
-
-
 if __name__ == "__main__":
     all_available_players = get_active_players()
-    user_desired_players, all_available_players = get_desired_players(all_available_players)
-    all_available_players = remove_undesired_players(all_available_players)
-    N = int(raw_input('How many simulations should be averaged? '))
-    roster = pd.DataFrame(columns=['full_name','team','position','points','player_object'])
-    for p in user_desired_players:
-        roster.loc[p.player_id] = [p.full_name, p.team, p.position, simulate([p], N), p]
-    all_available_players_df = players_to_df(all_available_players[1500:])
-    roster = build_optimal_team(roster, all_available_players_df)
-    roster = roster.sort_values(by='points', ascending=False)
-    roster.to_csv(str(N)+'_iter_sim')
-    print(tabulate(roster, headers='keys', tablefmt='psql'))
-
-
+    user_desired_players = []
+    N = [1,5,25,50,100,250]
+    for n in N:
+        roster = pd.DataFrame(columns=['full_name', 'team', 'position', 'points', 'player_object'])
+        all_available_players_df = players_to_df(all_available_players, n)
+        roster = build_optimal_team(roster, all_available_players_df)
+        roster = roster.sort_values(by='points', ascending=False)
+        roster.to_csv(str(n) + '_iter_sim')
+        print(tabulate(roster, headers='keys', tablefmt='psql'))
