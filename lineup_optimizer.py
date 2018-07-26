@@ -259,7 +259,7 @@ def can_add_player(roster, new_position):
     if new_position == '' or not football_pos_to_ff_pos(new_position):
         return False
 
-    # This if the [min,max] number of players that can be in each position group.
+    # This is the [min,max] number of players that can be in each position group.
     team_restrictions = {'QB': [1,4],
                          'RB': [2,8],
                          'WR': [2,8],
