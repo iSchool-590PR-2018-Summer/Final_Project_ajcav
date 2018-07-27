@@ -4,28 +4,6 @@ import pandas as pd
 from tabulate import tabulate
 
 
-def validate_team(players, addition):
-    team_restrictions = {'QB': 4,
-                         'RB': 8,
-                         'WR': 8,
-                         'TE': 3,
-                         'K': 3,
-                         'D/ST': 3}
-
-    potential_team = players + [addition]
-    if len(potential_team) >= 16:
-        print('Cannot add player. Team is already full.')
-        return False
-
-    for player in potential_team:
-        if player.position in team_restrictions.keys():
-            team_restrictions[player.position] -= 1
-            if team_restrictions[player.position] < 0:
-                print('Cannot add another '+player.position)
-                return False
-    return True
-
-
 def validate_player(player):
     """
     This method takes in a string (player) which is the name of a player that the user is trying to find. The method
@@ -144,7 +122,7 @@ def get_player_score(player):
 
     # Only loop through a finite number of times to find games that a user has played in.
     i = 0
-    while i < 50:
+    while i < 8:
         i += 1
 
         # Get random week/year to query
@@ -194,7 +172,8 @@ def simulate(team, N=100):
             simulation_score.append(get_player_score(player))
 
         # Add the average of the N simulations to the total team score
-        total_score += np.mean(simulation_score)
+        if len(simulation_score) != 0:
+            total_score += np.mean(simulation_score)
     return total_score
 
 
@@ -213,7 +192,8 @@ def players_to_df(players, N):
 
     # Go through each Player in the list of players, and add their information to the dataframe
     for index, p in enumerate(players):
-        print('Simulating player '+str(index+1)+' of '+str(len(players)))
+        if N != 0:
+            print('Simulating player '+str(index+1)+' of '+str(len(players)))
         df.loc[p.player_id] = [p.full_name, p.team, p.position, simulate([p], N), p]
     return df
 
@@ -259,6 +239,10 @@ def can_add_player(roster, new_position):
     if new_position == '' or not football_pos_to_ff_pos(new_position):
         return False
 
+    # If we already have a full roster, we can't add another player
+    if len(roster.index) >= 16:
+        return False
+
     # This is the [min,max] number of players that can be in each position group.
     team_restrictions = {'QB': [1,4],
                          'RB': [2,8],
@@ -274,7 +258,7 @@ def can_add_player(roster, new_position):
     # team_restrictions (unless the player qualifies as flex (this can be used only once)).
     for index, row in roster.iterrows():
         if football_pos_to_ff_pos(row['position']):
-            if row['position'] in ['QB','RB','WR'] and not flex_used:
+            if row['position'] in ['TE','RB','WR'] and not flex_used:
                 flex_used = True
                 continue
 
@@ -298,25 +282,26 @@ def can_add_player(roster, new_position):
     for key in team_restrictions:
         if team_restrictions[key][0] > 0:
             min_players_needed += team_restrictions[key][0]
-    if 16 - len(roster.index) <= min_players_needed: #if min_players_needed > 16 - len(roster.index):
+    if 16 - len(roster.index) <= min_players_needed:
         return False
 
-    # If we've made it this far, then adding this player won't violate any rules. Return True
+    # If we've made it this far, then adding this player won't violate any rules
     return True
 
 
-def build_optimal_team(current_roster, available_players):
+def build_optimal_team(roster, available_players):
     """
     This method takes in the current roster, as well as the list of available players to choose from. The list of
     available players is sorted in descending order by the number of points each player earned in the MC simulation. The
     method then moves through the dataframe, picking off the highest scoring players. If the player can legally be added
      to the team, the player is added. Otherwise, we move on to the next player until we have a full team.
 
-    :param current_roster: pandas dataframe with players currently on the fantasy team
+    :param roster: pandas dataframe with players currently on the fantasy team
     :param available_players: pandas dataframe with all available players (including points earned in MC simulation)
     :return: pandas dataframe with full roster of optimized team
     """
 
+    current_roster = roster.copy(deep=True)
     # First, sort the players in descending order by the points they earned in the MC simulation
     available_players = available_players.sort_values(by='points', ascending=False)
 
@@ -352,7 +337,10 @@ def remove_undesired_players(players):
 
         # If we have the right player, remove them
         if player_to_remove:
-            players.remove(player_to_remove)
+            try:
+                players.remove(player_to_remove)
+            except:
+                print('Could not find '+str(player_to_remove))
         else:
             print('Could not find player.')
 
@@ -386,9 +374,11 @@ def get_desired_players(all_available_players):
         if new_player:
 
             # and we are legally allowed to add this player to the team, add them
-            if validate_team(players, new_player):
+            if can_add_player(players_to_df(players, 0), new_player.position):
                 players.append(new_player)
                 all_available_players.remove(new_player)
+            else:
+                print('Cannot add player.')
         else:
             print('Could not find player. Please try again.')
 
@@ -424,7 +414,7 @@ if __name__ == "__main__":
         roster.loc[p.player_id] = [p.full_name, p.team, p.position, simulate([p], N), p]
 
     # Turn the list of available players into a df with the MC simulation points
-    all_available_players_df = players_to_df(all_available_players)
+    all_available_players_df = players_to_df(all_available_players, N)
 
     # Use the available players df to construct an optimal team
     roster = build_optimal_team(roster, all_available_players_df)
@@ -433,5 +423,3 @@ if __name__ == "__main__":
     roster = roster.sort_values(by='points', ascending=False)
     roster.to_csv(str(N)+'_iter_sim')
     print(tabulate(roster, headers='keys', tablefmt='psql'))
-
-

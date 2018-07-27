@@ -103,7 +103,7 @@ def score_to_fantasy_points(player):
 
 def get_player_score(player):
     i = 0
-    while i < 20:
+    while i < 8:
         i += 1
         year = np.random.choice([2014, 2015, 2016, 2017], p=[0.1, .15, .25, .5])
         week = np.random.randint(1, 18)
@@ -213,7 +213,8 @@ if __name__ == "__main__":
     for n in N:
         roster = pd.DataFrame(columns=['full_name', 'team', 'position', 'points', 'player_object'])
         all_available_players_df = players_to_df(all_available_players, n)
+        all_available_players_df.to_csv(str(n)+'iter_sim_all_players')
         roster = build_optimal_team(roster, all_available_players_df)
         roster = roster.sort_values(by='points', ascending=False)
-        roster.to_csv(str(n) + '_iter_sim')
+        roster.to_csv(str(n)+'_iter_sim_optimal_team')
         print(tabulate(roster, headers='keys', tablefmt='psql'))
