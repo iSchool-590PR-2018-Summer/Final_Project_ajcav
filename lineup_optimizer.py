@@ -205,6 +205,12 @@ def football_pos_to_ff_pos(position):
 
     :param position: string, player position (e.g. 'QB' or 'WR')
     :return: string, group for fantasy football (e.g. 'QB' --> 'QB', 'DT' --> 'D/ST')
+
+    >>> football_pos_to_ff_pos('RB')
+    'RB'
+
+    >>> football_pos_to_ff_pos('DB')
+    'D/ST'
     """
 
     if position == 'QB':
