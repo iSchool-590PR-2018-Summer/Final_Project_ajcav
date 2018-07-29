@@ -209,7 +209,7 @@ def build_optimal_team(current_roster, available_players):
 if __name__ == "__main__":
     all_available_players = get_active_players()
     user_desired_players = []
-    N = [1,5,25,50,100,250]
+    N = [50,100,250]
     for n in N:
         roster = pd.DataFrame(columns=['full_name', 'team', 'position', 'points', 'player_object'])
         all_available_players_df = players_to_df(all_available_players, n)

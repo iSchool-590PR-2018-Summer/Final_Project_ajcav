@@ -223,7 +223,7 @@ def football_pos_to_ff_pos(position):
         return 'TE'
     elif position == 'K':
         return 'K'
-    elif position in ['DB','DE','DT','CB','LS','LB','P','ILB','OLB','T','NT']:
+    elif position in ['DB', 'DE', 'DT', 'CB', 'LS', 'LB', 'P', 'ILB', 'OLB', 'T', 'NT']:
         return 'D/ST'
 
     # If the position is not in the list, return None
@@ -250,12 +250,12 @@ def can_add_player(roster, new_position):
         return False
 
     # This is the [min,max] number of players that can be in each position group.
-    team_restrictions = {'QB': [1,4],
-                         'RB': [2,8],
-                         'WR': [2,8],
-                         'TE': [1,3],
-                         'K': [1,3],
-                         'D/ST': [1,3]}
+    team_restrictions = {'QB': [1, 4],
+                         'RB': [2, 8],
+                         'WR': [2, 8],
+                         'TE': [1, 3],
+                         'K': [1, 3],
+                         'D/ST': [1, 3]}
 
     # Indicates if we have used our flex spot yet (flex can be WR, RB, or TE)
     flex_used = False
@@ -332,7 +332,7 @@ def remove_undesired_players(players):
     """
 
     # Prompt the user for player names they would like to remove
-    print('Are there any players you absolutely do not want on your team? ')
+    print('Are there any players you absolutely do not want on your team? (blank if none)')
     player_to_remove = raw_input('Enter player name: ')
 
     # If the user has entered something...
@@ -410,7 +410,14 @@ if __name__ == "__main__":
     all_available_players = remove_undesired_players(all_available_players)
 
     # Prompt the user for the # of MC simulations to be run for each player (more is better but more time consuming)
-    N = int(raw_input('How many simulations should be averaged? '))
+    while True:
+        N = raw_input('How many simulations should be averaged? ')
+        try:
+            N = int(N)
+        except ValueError:
+            print('Please enter an integer.')
+        if isinstance(N, (int, long)) and N > 0:
+            break
 
     # Initialize empty roster
     roster = pd.DataFrame(columns=['full_name','team','position','points','player_object'])
