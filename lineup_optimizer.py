@@ -38,7 +38,7 @@ def validate_player(player):
         try:
             selection = int(raw_input('Enter your selection: '))
             if selection < 1 or selection > len(matches):
-                print('Please make a valid selection.')
+                print('Please make a valid selection. (1-' + str(len(matches))+')')
                 continue
             break
         except ValueError:
