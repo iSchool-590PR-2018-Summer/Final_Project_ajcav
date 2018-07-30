@@ -34,7 +34,15 @@ def validate_player(player):
         print('('+str(i+1)+') - '+player.title()+', '+matches[i].team+', number '+str(matches[i].number))
 
     # Prompt the user to select which player they were looking for
-    selection = int(raw_input('Enter your selection: '))
+    while True:
+        try:
+            selection = int(raw_input('Enter your selection: '))
+            if selection < 1 or selection > len(matches):
+                print('Please make a valid selection.')
+                continue
+            break
+        except ValueError:
+            print('Please make a valid selection.')
     return matches[selection-1]
 
 
