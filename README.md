@@ -3,7 +3,7 @@
 ## Alex Cavanaugh
 
 # Monte Carlo Simulation Scenario & Purpose:
-The purpose uses a Monte Carlo simulation to create a distribution for player statistics that are relevant to fantasy
+This program uses a Monte Carlo simulation to create a distribution for player statistics that are relevant to fantasy
 football. This information is then organized and presented to the user as a lineup of players that are likely to earn
 the most points in a season. This program can also be used in a live draft to dynamically create the optimal team given that not all players are available. 
 
