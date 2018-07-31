@@ -44,7 +44,7 @@ to
 Now we're ready to run the `update_players.py` script which will pull an updated list of players from the 2017 season. Run `python update_players.py` and you should see some output indicating that the script is looking for players. It may take a while to download all the information. Also, you may get some errors while running this. When I ran the script, I ultimately had 75 players that the script could not gather information on. These players did not have enough information to be used in the simulation, so we can ignore these erros.
 
 
-Next, we need to update the game schedule. To do this, run `update_sched.py --year 2017`. (The `update_sched.py` file should be in the same location at the `update_players.py` file.)
+Next, we need to update the game schedule. To do this, run `python update_sched.py --year 2017`. (The `update_sched.py` file should be in the same location at the `update_players.py` file.)
 
 Finally, we should be ready to use the `lineup_optimizer.py` script in this program. When you run the script, the program will ask for any players that you would like to include on your team regardless of their MC score, and any players that should be excluded from your team (regardless of MC score). Next, the program will ask for the number of MC simulations to be performed. Finally, the program will perform the required simulations, and display the optimal roster to the user. A small number of simulations (<10) should run relatively quickly, however as the number of simulations grows, the time to execute grows significantly. 
 
