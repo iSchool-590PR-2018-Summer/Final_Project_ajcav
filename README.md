@@ -41,6 +41,8 @@ to
 
 `last_name, first_name = map(lambda s: s.strip(), name.split(',')[:2])`
 
+Now we're ready to run the `update_players.py` script which will pull an updated list of players from the 2017 season. Run `python update_players.py` and you should see some output indicating that the script is looking for players. It may take a while to download all the information. Also, you may get some errors while running this. When I ran the script, I ultimately had 75 players that the script could not gather information on. These players did not have enough information to be used in the simulation, so we can ignore these erros.
+
 
 Next, we need to update the game schedule. To do this, run `update_sched.py --year 2017`. (The `update_sched.py` file should be in the same location at the `update_players.py` file.)
 
