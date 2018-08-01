@@ -308,7 +308,7 @@ def build_optimal_team(roster, available_players):
     This method takes in the current roster, as well as the list of available players to choose from. The list of
     available players is sorted in descending order by the number of points each player earned in the MC simulation. The
     method then moves through the dataframe, picking off the highest scoring players. If the player can legally be added
-     to the team, the player is added. Otherwise, we move on to the next player until we have a full team.
+    to the team, the player is added. Otherwise, we move on to the next player until we have a full team.
 
     :param roster: pandas dataframe with players currently on the fantasy team
     :param available_players: pandas dataframe with all available players (including points earned in MC simulation)
@@ -436,11 +436,12 @@ if __name__ == "__main__":
 
     # Turn the list of available players into a df with the MC simulation points
     all_available_players_df = players_to_df(all_available_players, N)
+    all_available_players_df.to_csv(str(N)+'_sim_all_players')
 
     # Use the available players df to construct an optimal team
     roster = build_optimal_team(roster, all_available_players_df)
 
     # Record the roster for later access and print
     roster = roster.sort_values(by='points', ascending=False)
-    roster.to_csv(str(N)+'_iter_sim')
+    roster.to_csv(str(N)+'_sim_optimal_team')
     print(tabulate(roster, headers='keys', tablefmt='psql'))
