@@ -33,6 +33,7 @@ Regardless of how you choose to use the program, the following packages are requ
 2. tabulate
 3. nflgame
 4. numpy
+
 These can all be installed via pip. `pip install <package_name>`
 
 ### Creating an Optimal Team
