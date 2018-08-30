@@ -68,6 +68,7 @@ if __name__ == "__main__":
 
         # Build optimal roster and display to user
         optimal_roster = lineup_optimizer.build_optimal_team(user_roster, available_players)
+        print('')
         print('Optimal roster: ')
         print(tabulate(format_optimal_roster(user_roster,optimal_roster), headers='keys', tablefmt='psql'))
 
@@ -90,6 +91,7 @@ if __name__ == "__main__":
                 picked_player = None
 
         # Show the user their roster
+        print('')
         print('Your current roster: ')
         print(tabulate(user_roster, headers='keys', tablefmt='psql'))
 
