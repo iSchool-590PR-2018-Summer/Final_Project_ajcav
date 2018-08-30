@@ -50,7 +50,7 @@ if __name__ == "__main__":
     while draft:
 
         # Get the players picked by other league members
-        picked_player_name = raw_input('Player picked by other league member: (empty line to continue)')
+        picked_player_name = raw_input('Player picked by other league member: (empty line to continue) ')
         while picked_player_name:
 
             # Remove the picked players from the available players
@@ -58,7 +58,11 @@ if __name__ == "__main__":
             while not player_to_remove:
                 print('Could not find player '+str(picked_player_name))
                 picked_player_name = raw_input('Player picked by other league member: ')
+                if picked_player_name == '':
+                    break
                 player_to_remove = lineup_optimizer.validate_player(picked_player_name)
+            if picked_player_name == '':
+                break
             available_players = available_players.drop(player_to_remove.player_id)
             picked_player_name = raw_input('Player picked by other league member: ')
 
@@ -70,7 +74,7 @@ if __name__ == "__main__":
         # Get the users pick
         picked_player = None
         while not picked_player:
-            picked_player_name = raw_input('Who do you pick? (empty line to skip)')
+            picked_player_name = raw_input('Who do you pick? (empty line to skip) ')
             picked_player = lineup_optimizer.validate_player(picked_player_name)
             if picked_player_name == '':
                 break
